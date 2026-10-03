@@ -2,94 +2,247 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Auditoria de WordPress — achados em 24h</title>
-<meta name="description" content="Auditoria de seguranca e performance para WordPress. Tres achados concretos no seu site, sem compromisso.">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Monte Alto Auditoria — segurança de código para quem perde capital</title>
+<meta name="description" content="Auditoria de código para incorporadoras, construtoras e administradoras de condomínio. Achado com arquivo e linha, triado por padrão. R$ 550 a varredura, R$ 180 a hora de correção.">
+<meta property="og:title" content="Monte Alto Auditoria — segurança de código">
+<meta property="og:description" content="Auditoria de código para incorporadoras, construtoras e administradoras. Achado com arquivo e linha, triado por padrão.">
 <style>
-  :root{--fundo:#0d1117;--card:#161b22;--linha:#21262d;--texto:#e6edf3;--fraco:#8b949e;--verde:#3fb950;--azul:#58a6ff}
+  :root{
+    --fundo:#0d1117;--card:#161b22;--linha:#21262d;--texto:#e6edf3;
+    --fraco:#8b949e;--verde:#3fb950;--azul:#58a6ff;--vermelho:#f85149;
+    --ambar:#d29922;--mono:'Cascadia Code',Consolas,'Courier New',monospace;
+  }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--fundo);color:var(--texto);font:16px/1.6 -apple-system,Segoe UI,Roboto,sans-serif}
-  .limite{max-width:920px;margin:0 auto;padding:0 20px}
-  header{padding:64px 0 40px;border-bottom:1px solid var(--linha)}
-  h1{font-size:34px;line-height:1.25;margin-bottom:16px}
+  body{background:var(--fundo);color:var(--texto);font:16px/1.65 -apple-system,'Segoe UI',Roboto,sans-serif}
+  .limite{max-width:960px;margin:0 auto;padding:0 20px}
+
+  header{padding:70px 0 44px;border-bottom:1px solid var(--linha)}
+  h1{font-size:38px;line-height:1.2;margin-bottom:18px;letter-spacing:-.5px}
   h1 em{font-style:normal;color:var(--verde)}
-  .sub{color:var(--fraco);font-size:18px;max-width:640px}
-  section{padding:44px 0;border-bottom:1px solid var(--linha)}
-  h2{font-size:22px;margin-bottom:24px}
-  .grade{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .sub{color:var(--fraco);font-size:19px;max-width:660px}
+  .selo{display:inline-block;margin-top:22px;padding:7px 14px;border:1px solid var(--linha);
+        border-radius:20px;font-size:13px;color:var(--fraco);background:var(--card)}
+
+  section{padding:46px 0;border-bottom:1px solid var(--linha)}
+  h2{font-size:23px;margin-bottom:26px}
+  h3{font-size:16px;margin-bottom:8px;color:var(--azul)}
+
+  .grade{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
   .card{background:var(--card);border:1px solid var(--linha);border-radius:10px;padding:20px}
-  .card h3{font-size:16px;margin-bottom:8px;color:var(--azul)}
   .card p{color:var(--fraco);font-size:15px}
+
+  .numeros{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin:26px 0 8px}
+  .num{background:var(--card);border:1px solid var(--linha);border-radius:10px;padding:18px 20px}
+  .num .n{font-size:30px;font-weight:700;line-height:1}
+  .num .l{color:var(--fraco);font-size:12px;text-transform:uppercase;letter-spacing:.5px;margin-top:8px}
+  .num .n.verde{color:var(--verde)} .num .n.ambar{color:var(--ambar)} .num .n.vermelho{color:var(--vermelho)}
+
+  .precos{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .preco{background:var(--card);border:1px solid var(--linha);border-radius:12px;padding:24px;position:relative}
+  .preco.destaque{border-color:var(--verde);background:#0f2d1a}
+  .preco .tag{position:absolute;top:-11px;right:18px;background:var(--verde);color:#0d1117;
+              padding:3px 11px;border-radius:11px;font-size:11px;font-weight:700;text-transform:uppercase}
+  .preco .valor{font-size:32px;font-weight:700;color:var(--verde);margin:10px 0 4px}
+  .preco .und{color:var(--fraco);font-size:13px;margin-bottom:14px}
+  .preco ul{list-style:none;font-size:14px;color:var(--fraco)}
+  .preco li{padding:5px 0 5px 20px;position:relative}
+  .preco li:before{content:'\00b7';position:absolute;left:6px;color:var(--verde);font-weight:700}
+
+  pre{background:#010409;border:1px solid var(--linha);border-radius:8px;padding:16px;
+      overflow-x:auto;margin:16px 0;font-family:var(--mono);font-size:13px;line-height:1.55;color:var(--texto)}
+  code{font-family:var(--mono);font-size:13px;background:var(--card);padding:2px 6px;border-radius:4px}
+  .sev{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:700;
+       text-transform:uppercase;margin-right:8px}
+  .sev.critica{background:#3d1a20;color:var(--vermelho)}
+  .sev.alta{background:#3a2a14;color:var(--ambar)}
+
   .passos{counter-reset:p;list-style:none}
   .passos li{counter-increment:p;padding-left:44px;position:relative;margin-bottom:18px}
-  .passos li:before{content:counter(p);position:absolute;left:0;top:0;width:28px;height:28px;background:var(--verde);color:#0d1117;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+  .passos li:before{content:counter(p);position:absolute;left:0;top:1px;width:28px;height:28px;
+    background:var(--verde);color:#0d1117;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;font-weight:700;font-size:15px}
+
   form{background:var(--card);border:1px solid var(--linha);border-radius:10px;padding:28px}
   label{display:block;margin-bottom:16px;font-size:14px;color:var(--fraco)}
-  input{width:100%;padding:11px 13px;background:var(--fundo);border:1px solid var(--linha);border-radius:6px;color:var(--texto);font-size:15px;margin-top:6px}
-  input:focus{outline:none;border-color:var(--verde)}
-  button{width:100%;padding:14px;background:var(--verde);color:#0d1117;border:0;border-radius:6px;font-size:16px;font-weight:700;cursor:pointer}
+  input,select{width:100%;padding:11px 13px;background:var(--fundo);border:1px solid var(--linha);
+        border-radius:6px;color:var(--texto);font-size:15px;margin-top:6px}
+  input:focus,select:focus{outline:none;border-color:var(--verde)}
+  button{width:100%;padding:14px;background:var(--verde);color:#0d1117;border:0;border-radius:6px;
+         font-size:16px;font-weight:700;cursor:pointer}
   button:hover{background:#2ea043}
+  button:disabled{opacity:.6;cursor:wait}
   .aviso{font-size:13px;color:var(--fraco);margin-top:14px;text-align:center}
-  .ok{background:#0f2d1a;border:1px solid var(--verde);color:var(--verde);padding:16px;border-radius:8px;margin-bottom:18px}
-  footer{padding:32px 0;color:var(--fraco);font-size:14px;text-align:center}
-  .preco{font-size:30px;font-weight:700;color:var(--verde)}
+  .ok{background:#0f2d1a;border:1px solid var(--verde);color:var(--verde);padding:16px;
+      border-radius:8px;margin-bottom:18px}
+  .ok.ruim{border-color:var(--vermelho);color:var(--vermelho);background:#2d1117}
+  .nota{font-size:14px;color:var(--fraco);background:var(--card);border-left:3px solid var(--ambar);
+        padding:14px 18px;border-radius:0 8px 8px 0;margin:18px 0}
+  footer{padding:34px 0;color:var(--fraco);font-size:14px;text-align:center;line-height:1.9}
+  @media(max-width:600px){h1{font-size:29px}}
 </style>
 </head>
 <body>
 <div class="limite">
 
 <header>
-  <h1>Seu WordPress tem falhas que <em>ninguém te contou</em></h1>
-  <p class="sub">Auditoria de seguranca e performance. Você recebe três achados concretos, com o arquivo e a linha, antes de pagar qualquer coisa.</p>
+  <h1>Seu site tem uma falha que custa <em>capital</em>, não só lentidão</h1>
+  <p class="sub">Auditoria de código para incorporadoras, construtoras e administradoras de condomínio.
+  Achado com arquivo e linha, triado por padrão — porque 546 apontamentos não são auditoria, são ruído.</p>
+  <div class="selo">Pessoa física · sem empresa aberta · todo o ES</div>
 </header>
 
 <section>
-  <h2>O que você recebe, de graça</h2>
-  <div class="grade">
-    <div class="card"><h3>Superfície exposta</h3><p>Versões desatualizadas de plugin, tema e WordPress. É a porta de entrada mais comum.</p></div>
-    <div class="card"><h3>Erros que vazam dado</h3><p>PHP notice, warning e debug aberto em produção. Isso expõe caminho de arquivo e Consulta de banco.</p></div>
-    <div class="card"><h3>O que trava o site</h3><p>Cache, imagem e consulta lenta. Onde o servidor gasta tempo sem precisar.</p></div>
+  <h2>O que uma falha de segurança custa na sua porta</h2>
+  <p class="sub" style="max-width:none">
+  Pet shop não paga por auditoria. Incorporadora paga, porque o site carrega o nome que o
+  comprador pesquisa, o formulário é o canal de lead do lançamento e o e-mail que chega
+  falseado com o seu nome tem a sua marca. Administradora tem mais: condômino que paga
+  boleto todo mês e cadastra nome, telefone e banco. Aí a falha não é o site cair.</p>
+</section>
+
+<section>
+  <h2>Amostra real, de plugin em produção</h2>
+  <p class="sub" style="max-width:none;margin-bottom:8px">
+  WP File Manager 8.0.6, baixado do repositório oficial do WordPress. 295 arquivos PHP analisados.</p>
+
+  <div class="numeros">
+    <div class="num"><div class="n">546</div><div class="l">pontos brutos</div></div>
+    <div class="num"><div class="n verde">42</div><div class="l">grupos por padrão</div></div>
+    <div class="num"><div class="n verde">28</div><div class="l">acionáveis</div></div>
+    <div class="num"><div class="n vermelho">9</div><div class="l">graves</div></div>
   </div>
+
+  <p class="sub" style="max-width:none;margin-top:22px">Dois dos nove, lidos no código fonte:</p>
+
+  <p style="margin-top:18px"><span class="sev critica">crítica</span><b>include com variável</b> — <code>lib/php/autoload.php:39-45</code></p>
+<pre>$file = ELFINDER_PHP_ROOT_PATH . '/' . $name . '.class.php';
+return (is_file($file) &amp;&amp; include_once($file));</pre>
+  <p style="color:var(--fraco);font-size:15px">O <code>is_file()</code> reduz o risco, mas não zera. Se qualquer outro ponto do
+  plugin permitir controlar <code>$name</code>, isso vira execução de arquivo no servidor.</p>
+
+  <p style="margin-top:22px"><span class="sev alta">alta</span><b>unserialize sem restringir classe</b> — <code>lib/php/elFinderSession.php:206</code></p>
+<pre>$data = unserialize(base64_decode($var));</pre>
+  <p style="color:var(--fraco);font-size:15px">O <code>unserialize()</code> reconstrói objetos PHP. Se a sessão for manipulável,
+  o atacante escolhe qual classe instanciar. E <code>base64_decode</code> não é proteção:
+  é codificação.</p>
+</section>
+
+<section>
+  <h2>Como eu triago</h2>
+  <div class="grade">
+    <div class="card"><h3>Por arquivo e padrão</h3>
+      <p>514 escritas de arquivo viram um item, não 514. O que importa é o padrão do autor, não a linha.</p></div>
+    <div class="card"><h3>Código de terceiro é dependência</h3>
+      <p>Achado em jQuery, CodeMirror e elFinder não é falha de quem usa o plugin. Vira "atualizar dependência".</p></div>
+    <div class="card"><h3>Nada é escondido</h3>
+      <p>Todo achado continua no laudo, com arquivo e linha. A triagem muda a ordem de leitura, não o que existe.</p></div>
+    <div class="card"><h3>Diz o que está certo também</h3>
+      <p>Se a enumeração de usuário está bloqueada, o laudo diz. Distinguir exposto de bloqueado é o trabalho.</p></div>
+  </div>
+  <div class="nota">
+  A verificação é sobre código, não sobre invasão. Nenhum acesso foi tentado, nenhuma
+  credencial foi testada. O relatório se obtém por autorização do titular do site, por escrito.
+  </div>
+</section>
+
+<section>
+  <h2>Preços</h2>
+  <div class="precos">
+    <div class="preco">
+      <div class="valor">R$ 550</div>
+      <div class="und">varredura completa</div>
+      <ul>
+        <li>Todo o site ou plugin mapeado</li>
+        <li>Achado com arquivo, linha e severidade</li>
+        <li>Agrupado por arquivo e padrão</li>
+        <li>Laudo em PDF</li>
+        <li>Correção sugerida em cada item</li>
+      </ul>
+    </div>
+    <div class="preco destaque">
+      <span class="tag">mais pedido</span>
+      <div class="valor">R$ 2.400</div>
+      <div class="und">auditoria completa</div>
+      <ul>
+        <li>Tudo da varredura</li>
+        <li>Análise de fluxo de dado em cada achado crítico</li>
+        <li>Prioridade de ataque encadeada</li>
+        <li>Reunião de entrega de 60 minutos</li>
+        <li>Prazo de 5 dias úteis</li>
+      </ul>
+    </div>
+    <div class="preco">
+      <div class="valor">R$ 180</div>
+      <div class="und">por hora de correção</div>
+      <ul>
+        <li>Só depois do diagnóstico</li>
+        <li>O diagnóstico não é a correção</li>
+        <li>Orçado antes de começar</li>
+        <li>Você aprova cada etapa</li>
+      </ul>
+    </div>
+  </div>
+  <p class="sub" style="max-width:none;margin-top:20px">
+  Prestador pessoa física: Luiz Claudio Oliveira dos Santos. PIX direto, sem nota fiscal.
+  Se o seu processo exigir documento fiscal, isso é negociado à parte e pode alterar o valor.</p>
 </section>
 
 <section>
   <h2>Como funciona</h2>
   <ol class="passos">
-    <li>Você manda o endereço do site. Sem conta, sem cartão, sem compromisso.</li>
-    <li>Eu rodo a varredura e leio o resultado. Em geral em 24 horas.</li>
-    <li>Você recebe os três achados por WhatsApp, com o que fazer em cada um.</li>
-    <li>Se quiser corrigir, o preço é <span class="preco">R$ 550</span> por auditoria completa, ou R$ 90 a hora. Você decide, sem pressão.</li>
+    <li>Você manda o endereço do site, ou o acesso ao código. Sem conta, sem cartão.</li>
+    <li>Eu rodo a varredura, leio o resultado e confirmo o que é achado e o que é falso positivo.</li>
+    <li>Você recebe os achados com arquivo e linha, e o que fazer em cada um.</li>
+    <li>Se quiser corrigir, orço. Se não, o diagnóstico é seu mesmo assim.</li>
   </ol>
 </section>
 
 <section>
-  <h2>Peça seus três achados</h2>
+  <h2>Peça seus achados</h2>
   <div id="resposta"></div>
   <form id="f">
     <label>Seu nome
       <input name="nome" required maxlength="80" autocomplete="name">
     </label>
-    <label>Seu WhatsApp com DDD
+    <label>Empresa
+      <input name="empresa" required maxlength="120" placeholder="Nome da incorporadora, construtora ou administradora">
+    </label>
+    <label>WhatsApp com DDD
       <input name="telefone" required maxlength="20" placeholder="27 99999-0000" inputmode="tel">
     </label>
     <label>E-mail
       <input name="email" required type="email" maxlength="120" autocomplete="email">
     </label>
-    <label>Endereço do site (sem https://)
-      <input name="site" required maxlength="200" placeholder="meusite.com.br">
+    <label>Seu segmento
+      <select name="segmento">
+        <option>Incorporadora / construtora</option>
+        <option>Administradora de condomínio</option>
+        <option>Imobiliária</option>
+        <option>Outro</option>
+      </select>
     </label>
-    <button type="submit">Quero meus três achados</button>
-    <p class="aviso">Seus dados ficam comigo. Não vendem, não compartilham, não vão para lista de ninguém.</p>
+    <label>Endereço do site (sem https://)
+      <input name="site" required maxlength="200" placeholder="meusite.com.br" inputmode="url">
+    </label>
+    <button type="submit">Quero meus achados</button>
+    <p class="aviso">Seus dados ficam comigo. Não vendo, não compartilho, não vão para lista de ninguém.</p>
   </form>
 </section>
 
-<footer>Monte Alto · auditoria de código · Serra e Vila Velha, ES</footer>
+<footer>
+  <b>Monte Alto Auditoria</b> · Luiz Claudio Oliveira dos Santos<br>
+  27 99818-5280 · Serra e Vila Velha, ES · atendimento em todo o estado<br>
+  luizclaudio.auditoria@outlook.com<br>
+  <span style="font-size:13px">Diagnóstico por leitura de código. Não é teste de invasão nem pentest.</span>
+</footer>
 </div>
 
 <script>
 document.getElementById('f').addEventListener('submit', async function (e) {
   e.preventDefault();
   const b = e.target.querySelector('button');
+  const caixa = document.getElementById('resposta');
   b.disabled = true; b.textContent = 'Enviando…';
   const dados = Object.fromEntries(new FormData(e.target));
   const destino = window.LEADS_URL || '';
@@ -102,24 +255,22 @@ document.getElementById('f').addEventListener('submit', async function (e) {
       });
       if (!r.ok) throw new Error('HTTP ' + r.status);
     } else {
-      // Sem endpoint configurado: abre o WhatsApp direto.
-      const t = encodeURIComponent(dados.telefone.replace(/\D/g, ''));
-      const m = encodeURIComponent(
-        'Olá Luiz, quero meus três achados.\n\n' +
+      var t = encodeURIComponent(dados.telefone.replace(/\D/g, ''));
+      var m = encodeURIComponent(
+        'Olá Luiz, quero meus achados.\n\n' +
         'Nome: ' + dados.nome + '\n' +
+        'Empresa: ' + dados.empresa + '\n' +
+        'Segmento: ' + (dados.segmento || '').trim() + '\n' +
         'Site: ' + dados.site + '\n' +
         'E-mail: ' + dados.email
       );
       window.open('https://wa.me/55' + t + '?text=' + m, '_blank');
     }
-    document.getElementById('resposta').innerHTML =
-      '<div class="ok">Recebi. Você vai ter resposta no WhatsApp.</div>';
+    caixa.innerHTML = '<div class="ok">Recebi. Você vai ter resposta no WhatsApp.</div>';
     e.target.reset();
   } catch (err) {
-    document.getElementById('resposta').innerHTML =
-      '<div class="ok" style="border-color:#f85149;color:#f85149;background:#2d1117">' +
-      'Não consegui enviar agora. Me chama no WhatsApp que eu registro na mão.</div>';
-  } finally { b.disabled = false; b.textContent = 'Quero meus três achados'; }
+    caixa.innerHTML = '<div class="ok ruim">Não consegui enviar agora. Me chama no WhatsApp que eu registro na mão.</div>';
+  } finally { b.disabled = false; b.textContent = 'Quero meus achados'; }
 });
 </script>
 </body>
