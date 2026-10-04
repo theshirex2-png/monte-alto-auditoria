@@ -4,8 +4,8 @@ Gera o conjunto de marca da Monte Alto Auditoria — conceito CUME.
     python gerar_marca.py
 
 Saida em ./marca/:
-    icone-512.svg / icone-512-claro.svg
-    lockup-1200x320.svg / lockup-claro.svg
+    icone-512.svg
+    lockup-1200x320.svg
     mono-512.svg        impressao uma cor
     favicon.svg         32px
     favicon-16.svg
@@ -50,26 +50,37 @@ def cume_silhueta(cor_pico: str, cor_base: str, tam: int = 512) -> str:
 
 def lockup(cor_nome: str, cor_marca: str, cor_fraco: str, cor_linha: str,
            largura: int = 1200, altura: int = 320) -> str:
-    """Marca horizontal: simbolo a esquerda, nome e assinatura a direita.
+    """Marca horizontal: simbolo a esquerda, nome na MESMA LINHA a direita.
 
-    O simbolo e desenhado a 232px a partir do viewBox de 512 (escala 0.4531),
-    com 48px de folga antes do texto em x=304.
+    Requisito da marca: "MONTE ALTO AUDITORIA" tem de ler junto, como aparece
+    no site — nao empilhado em duas linhas. Por isso:
+      - o nome inteiro numa so linha: "MONTE ALTO" em peso forte e
+        "AUDITORIA" em peso leve, caixa alta, separados por um pipe;
+      - a assinatura fica abaixo, em corpo pequeno: e descricao, nao nome.
+
+    Medido: a 62px o nome ocupa de x=304 ate x~1012, com 188px de folga
+    ate a borda do viewBox de 1200.
     """
     e = 232 / 512
-    simbolo = f'''<g transform="translate(24 44) scale({e:.6f})">
-    <path fill="{cor_marca}" d="M256 64 L368 300 L300 300 L424 452 L88 452 L212 300 L144 300 Z"/>
-    <rect x="64" y="452" width="384" height="16" rx="8" fill="{cor_fraco}"/>
-  </g>'''
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {largura} {altura}" width="{largura}" height="{altura}" role="img" aria-label="Monte Alto Auditoria">
-  {simbolo}
-  <text x="304" y="148" font-family="'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
-        font-size="84" font-weight="700" letter-spacing="-2" fill="{cor_nome}">Monte Alto</text>
-  <text x="307" y="208" font-family="'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
-        font-size="40" font-weight="600" letter-spacing="10.5" fill="{cor_marca}">AUDITORIA</text>
-  <line x1="307" y1="234" x2="516" y2="234" stroke="{cor_linha}" stroke-width="2"/>
-  <text x="307" y="273" font-family="'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
-        font-size="24" fill="{cor_fraco}">seguranca de codigo</text>
-</svg>'''
+    simbolo = (
+        f'<g transform="translate(24 44) scale({e:.6f})">\n'
+        f'    <path fill="{cor_marca}" d="M256 64 L368 300 L300 300 L424 452 L88 452 L212 300 L144 300 Z"/>\n'
+        f'    <rect x="64" y="452" width="384" height="16" rx="8" fill="{cor_fraco}"/>\n'
+        f'  </g>')
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {largura} {altura}" '
+        f'width="{largura}" height="{altura}" role="img" aria-label="Monte Alto Auditoria">\n'
+        f'  {simbolo}\n'
+        f'  <g font-family="\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif">\n'
+        f'    <text x="304" y="176" font-size="62" font-weight="700" '
+        f'letter-spacing="-0.5" fill="{cor_nome}">MONTE ALTO</text>\n'
+        f'    <line x1="722" y1="130" x2="722" y2="176" stroke="{cor_linha}" stroke-width="3"/>\n'
+        f'    <text x="748" y="176" font-size="62" font-weight="400" '
+        f'letter-spacing="2.5" fill="{cor_marca}">AUDITORIA</text>\n'
+        f'    <text x="304" y="234" font-size="25" fill="{cor_fraco}">'
+        f'seguranca de codigo · auditoria de WordPress e PHP</text>\n'
+        f'  </g>\n'
+        f'</svg>')
 
 
 def _escudo(cor_borda: str, cor_texto: str) -> str:
@@ -99,8 +110,6 @@ def main() -> None:
     SAIDA.mkdir(exist_ok=True)
 
     (SAIDA / "icone-512.svg").write_text(cume_silhueta(VERDE, FRACO), encoding="utf-8")
-    (SAIDA / "icone-512-claro.svg").write_text(
-        cume_silhueta("#1f7a35", "#8a94a3"), encoding="utf-8")
     (SAIDA / "mono-512.svg").write_text(
         cume_silhueta("#0d1117", "#0d1117"), encoding="utf-8")
     (SAIDA / "favicon.svg").write_text(cume_silhueta(VERDE, FRACO, 32), encoding="utf-8")
@@ -108,8 +117,6 @@ def main() -> None:
 
     (SAIDA / "lockup-1200x320.svg").write_text(
         lockup(TEXTO, VERDE, FRACO, "#21262d"), encoding="utf-8")
-    (SAIDA / "lockup-claro.svg").write_text(
-        lockup("#0d1117", "#1f7a35", "#5a6472", "#d0d7de"), encoding="utf-8")
 
     (SAIDA / "lamina-escudo.svg").write_text(_escudo(VERDE, TEXTO), encoding="utf-8")
     (SAIDA / "lamina-camadas.svg").write_text(_camadas(AMAR, AZUL, VERDE), encoding="utf-8")
@@ -117,6 +124,11 @@ def main() -> None:
     # limpa sobras de execucoes anteriores
     for p in SAIDA.glob("_*"):
         p.unlink()
+    # Variante clara saiu de uso: a marca vive em fundo escuro. Nada
+    # branco — em fundo claro o cume perde o contraste e o verde do pico
+    # fica indistinguivel de um cume qualquer.
+    for nome in ("icone-512-claro.svg", "lockup-claro.svg"):
+        (SAIDA / nome).unlink(missing_ok=True)
 
     (SAIDA / "index.html").write_text(f'''<!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="utf-8">
@@ -132,12 +144,10 @@ def main() -> None:
  figure{{margin:0;text-align:center}}
  .art{{display:flex;align-items:center;justify-content:center;height:190px;
   background:#161b22;border:1px solid #21262d;border-radius:10px;padding:18px}}
- .art.clara{{background:#fff}}
  .art img{{height:150px;width:auto;max-width:100%}}
  figcaption{{color:#8b949e;margin-top:8px;font-size:12px;max-width:230px}}
  .peq .art{{height:52px;padding:6px}} .peq .art img{{height:40px}}
  .assin{{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:20px}}
- .assin.branco{{background:#fff}}
  .assin img{{height:64px;width:auto;max-width:100%}}
  .pe{{color:#8b949e;font-size:12px;margin-top:26px;max-width:680px}}
 </style></head><body>
@@ -149,7 +159,6 @@ continua legível a 40px na lista de contatos e a 32px em favicon.</p>
 <h2>Marca</h2>
 <div class="l">
  <figure><div class="art"><img src="icone-512.svg" alt=""></div><figcaption>512 · fundo escuro</figcaption></figure>
- <figure><div class="art clara"><img src="icone-512-claro.svg" alt=""></div><figcaption>512 · fundo claro</figcaption></figure>
  <figure><div class="art"><img src="mono-512.svg" alt=""></div><figcaption>monocromático</figcaption></figure>
 </div>
 
@@ -164,7 +173,6 @@ continua legível a 40px na lista de contatos e a 32px em favicon.</p>
 <h2>Assinatura horizontal</h2>
 <div class="l">
  <div class="assin"><img src="lockup-1200x320.svg" alt=""></div>
- <div class="assin branco"><img src="lockup-claro.svg" alt=""></div>
 </div>
 
 <h2>Lâminas — conceitos avaliados, não escolhidos</h2>
