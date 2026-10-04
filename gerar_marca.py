@@ -23,6 +23,10 @@ Geometria verificada por pixel sampling em 128, 64, 40 e 32 px:
 from __future__ import annotations
 
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).parent))
+from texto_para_traco import ARIAL, ARIAL_BD, texto_para_path  # noqa: E402
 
 # Paleta da pagina em producao (index.html, --verde e --fundo).
 FUNDO = "#0d1117"
@@ -50,36 +54,52 @@ def cume_silhueta(cor_pico: str, cor_base: str, tam: int = 512) -> str:
 
 def lockup(cor_nome: str, cor_marca: str, cor_fraco: str, cor_linha: str,
            largura: int = 1200, altura: int = 320) -> str:
-    """Marca horizontal: simbolo a esquerda, nome na MESMA LINHA a direita.
+    """Marca horizontal com o TEXTO EM TRACO, nao em <text>.
 
-    Requisito da marca: "MONTE ALTO AUDITORIA" tem de ler junto, como aparece
-    no site — nao empilhado em duas linhas. Por isso:
-      - o nome inteiro numa so linha: "MONTE ALTO" em peso forte e
-        "AUDITORIA" em peso leve, caixa alta, separados por um pipe;
-      - a assinatura fica abaixo, em corpo pequeno: e descricao, nao nome.
+    Motivo: <text> depende de a fonte estar instalada em quem abre. Onde
+    a fonte falta, o navegador usa uma substituta e o nome muda de forma e
+    de largura — o pipe saia de posicao e o nome podia passar da borda.
+    Como path, o arquivo desenha exatamente o que esta gravado.
 
-    Medido: a 62px o nome ocupa de x=304 ate x~1012, com 188px de folga
-    ate a borda do viewBox de 1200.
+    Fonte: Arial Bold para "MONTE ALTO", Arial para "AUDITORIA" e para a
+    assinatura. Sao metricamente parecidas, entao a linha de base bate.
+    As duas palavras ficam na MESMA linha, separadas por um pipe, e a posicao
+    do pipe e calculada pela largura medida do primeiro trecho — nao por
+    numero chutado. Foi assim que a versao anterior sobrepôs os dois textos.
+
+    A posicao vertical e a linha de base (y=176), nao o topo do texto.
     """
+    TAM = 62
+    ESP = -0.5
+    X0 = 304
+    BASE = 176
+    FOLGA = 26          # espaco de cada lado do pipe
+
+    d_nome, w_nome = texto_para_path("MONTE ALTO", ARIAL_BD, TAM, X0, BASE, ESP)
+    x_pipe = X0 + w_nome + FOLGA
+    x_aud = x_pipe + 3 + FOLGA
+    d_aud, w_aud = texto_para_path("AUDITORIA", ARIAL, TAM, x_aud, BASE, 2.5)
+
+    ASSINATURA = "seguranca de codigo · auditoria de WordPress e PHP"
+    d_ass, w_ass = texto_para_path(ASSINATURA, ARIAL, 25, X0, 234, 0)
+
     e = 232 / 512
     simbolo = (
         f'<g transform="translate(24 44) scale({e:.6f})">\n'
         f'    <path fill="{cor_marca}" d="M256 64 L368 300 L300 300 L424 452 L88 452 L212 300 L144 300 Z"/>\n'
         f'    <rect x="64" y="452" width="384" height="16" rx="8" fill="{cor_fraco}"/>\n'
         f'  </g>')
+
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {largura} {altura}" '
         f'width="{largura}" height="{altura}" role="img" aria-label="Monte Alto Auditoria">\n'
+        f'  <title>Monte Alto Auditoria</title>\n'
         f'  {simbolo}\n'
-        f'  <g font-family="\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif">\n'
-        f'    <text x="304" y="176" font-size="62" font-weight="700" '
-        f'letter-spacing="-0.5" fill="{cor_nome}">MONTE ALTO</text>\n'
-        f'    <line x1="722" y1="130" x2="722" y2="176" stroke="{cor_linha}" stroke-width="3"/>\n'
-        f'    <text x="748" y="176" font-size="62" font-weight="400" '
-        f'letter-spacing="2.5" fill="{cor_marca}">AUDITORIA</text>\n'
-        f'    <text x="304" y="234" font-size="25" fill="{cor_fraco}">'
-        f'seguranca de codigo · auditoria de WordPress e PHP</text>\n'
-        f'  </g>\n'
+        f'  <path fill="{cor_nome}" d="{d_nome}"/>\n'
+        f'  <line x1="{x_pipe:.1f}" y1="{BASE - 44:.1f}" x2="{x_pipe:.1f}" '
+        f'y2="{BASE:.1f}" stroke="{cor_linha}" stroke-width="3"/>\n'
+        f'  <path fill="{cor_marca}" d="{d_aud}"/>\n'
+        f'  <path fill="{cor_fraco}" d="{d_ass}"/>\n'
         f'</svg>')
 
 
