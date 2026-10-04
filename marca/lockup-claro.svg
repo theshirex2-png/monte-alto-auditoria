@@ -3,11 +3,10 @@
     <path fill="#1f7a35" d="M256 64 L368 300 L300 300 L424 452 L88 452 L212 300 L144 300 Z"/>
     <rect x="64" y="452" width="384" height="16" rx="8" fill="#5a6472"/>
   </g>
-  <text x="304" y="148" font-family="'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
-        font-size="84" font-weight="700" letter-spacing="-2" fill="#0d1117">Monte Alto</text>
-  <text x="307" y="208" font-family="'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
-        font-size="40" font-weight="600" letter-spacing="10.5" fill="#1f7a35">AUDITORIA</text>
-  <line x1="307" y1="234" x2="516" y2="234" stroke="#d0d7de" stroke-width="2"/>
-  <text x="307" y="273" font-family="'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
-        font-size="24" fill="#5a6472">seguranca de codigo</text>
+  <g font-family="'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+    <text x="304" y="176" font-size="62" font-weight="700" letter-spacing="-0.5" fill="#0d1117">MONTE ALTO</text>
+    <line x1="722" y1="130" x2="722" y2="176" stroke="#d0d7de" stroke-width="3"/>
+    <text x="748" y="176" font-size="62" font-weight="400" letter-spacing="2.5" fill="#1f7a35">AUDITORIA</text>
+    <text x="304" y="234" font-size="25" fill="#5a6472">seguranca de codigo · auditoria de WordPress e PHP</text>
+  </g>
 </svg>
