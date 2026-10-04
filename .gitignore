@@ -1,0 +1,41 @@
+# O motor de auditoria e as ferramentas nao vao para o repositorio
+# publico: o repositorio e a landing page, nao o codigo de produto.
+motor/
+
+# Dados de clientes, listas de prospectos e resultados de varredura.
+# Sao informacao comercial e de terceiros — nunca versionar.
+_dados/
+prospects.json
+prospects-2.json
+plugins-resultado.json
+triagem.json
+auditoria-exemplo.json
+amostra.json
+exemplo-cliente.py
+
+# PDFs e relatorios gerados: sao saida, regeravel a partir do motor.
+*.pdf
+RELATORIO-EXEMPLO.html
+
+# Backups de edicao. Regra do projeto: backup antes de mexer, e o
+# backup nao vai para o git.
+_backup/
+*.bak-*
+*.bak
+*.CORROMPIDO-*
+*.pre-triagem
+.git-antigo/
+
+# Alvos de prospeccao: sao listas de sites de terceiros.
+ALVOS*.txt
+
+# Ambiente
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Sistema
+Thumbs.db
+desktop.ini
+.DS_Store
