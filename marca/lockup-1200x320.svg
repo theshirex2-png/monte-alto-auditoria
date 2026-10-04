@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" width="1200" height="320" role="img" aria-label="Monte Alto Auditoria">
+  <g transform="translate(24 44) scale(0.453125)">
+    <path fill="#3fb950" d="M256 64 L368 300 L300 300 L424 452 L88 452 L212 300 L144 300 Z"/>
+    <rect x="64" y="452" width="384" height="16" rx="8" fill="#8b949e"/>
+  </g>
+  <text x="304" y="148" font-family="'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
+        font-size="84" font-weight="700" letter-spacing="-2" fill="#e6edf3">Monte Alto</text>
+  <text x="307" y="208" font-family="'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
+        font-size="40" font-weight="600" letter-spacing="10.5" fill="#3fb950">AUDITORIA</text>
+  <line x1="307" y1="234" x2="516" y2="234" stroke="#21262d" stroke-width="2"/>
+  <text x="307" y="273" font-family="'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
+        font-size="24" fill="#8b949e">seguranca de codigo</text>
+</svg>
